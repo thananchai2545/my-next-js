@@ -1,0 +1,6 @@
+model Category {
+    id            String   @id @default(uuid())
+    category_name String
+    createdAt     DateTime @default(now()) // บันทึกเวลาที่สร้าง
+    updatedAt     DateTime @default(now()) @updatedAt // อัปเดตเวลาเมื่อมีการแก้ไข
+}
