@@ -10,12 +10,9 @@ const limit = [{ value: "5" }, { value: "10" }, { value: "15" }];
 const LimitTable = () => {
   return (
     <div className="m-3">
-      <Select name="limit">
+      <Select name="limit" defaultValue="5">
         <SelectTrigger className="w-[180px]">
-          <SelectValue
-            defaultValue={limit[0].value}
-            placeholder={[limit[0].value]}
-          />
+          <SelectValue placeholder="Limit" />
         </SelectTrigger>
         <SelectContent>
           {limit.map((limit) => (
