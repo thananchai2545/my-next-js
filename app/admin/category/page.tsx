@@ -20,9 +20,10 @@ type Categoty = {
 };
 let page = 1;
 let limit = 5;
+var search = "";
 const data = async () => {
   const respones = await axios.get(
-    "/api/category?page=" + page + "&limit=" + limit
+    "/api/category?page=" + page + "&limit=" + limit + "&search=" + search
   );
   return respones.data;
 };
@@ -105,9 +106,11 @@ const category = () => {
     getCategory();
   };
 
-  const tableChenge = (e: React.ChangeEvent<HTMLFormElement>) => {
-    const { value } = e.target;
-    limit = Number(value);
+  const tableChenge = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    search = formData.get("search")?.toString()!;
+    limit = Number(formData.get("limit")?.toString()!) || 5;
     getCategory();
   };
   return (
@@ -190,11 +193,18 @@ const category = () => {
         </button>
       </div>
       <div className="relative bg-white overflow-x-auto shadow-md sm:rounded-lg">
-        <div>
-          <form onChange={tableChenge}>
-            <LimitTable></LimitTable>
-          </form>
-        </div>
+        <form
+          onChange={tableChenge}
+          className="flex justify-between items-center"
+        >
+          <LimitTable></LimitTable>
+          <input
+            name="search"
+            type="text"
+            placeholder="Search..."
+            className="h-9 border border-gray-300 rounded-md p-2 mx-5"
+          />
+        </form>
         <Table className="bg-white">
           <TableHeader className="bg-gray-50">
             <TableRow>

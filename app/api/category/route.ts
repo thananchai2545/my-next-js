@@ -7,9 +7,21 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     
     const page = url.searchParams.get('page');
-    const limit = parseInt(url.searchParams.get('limit')!);    
-    const total = await prisma.category.count({});
+    const limit = parseInt(url.searchParams.get('limit')!);
+    const search = url.searchParams.get('search')!; 
+    const total = await prisma.category.count({
+        where: {
+            category_name: {
+                contains: search
+            }
+        },
+    });
     const result = await prisma.category.findMany({
+        where: {
+            category_name: {
+                contains: search
+            }
+        },
         take: limit,
         skip: (Number(page) - 1) * limit,
         select: {
