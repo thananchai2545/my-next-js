@@ -4,7 +4,14 @@ const prisma = new PrismaClient();
 
 
 export async function GET(request: Request) {
+    const url = new URL(request.url);
+    
+    const page = url.searchParams.get('page');
+    const limit = parseInt(url.searchParams.get('limit')!);    
+    const total = await prisma.category.count({});
     const result = await prisma.category.findMany({
+        take: limit,
+        skip: (Number(page) - 1) * limit,
         select: {
             id: true,
             category_name: true
@@ -12,8 +19,8 @@ export async function GET(request: Request) {
         orderBy: {
             createdAt: 'asc'
         }
-    });
-    return Response.json({ category : result });
+    });    
+    return Response.json({ category : result ,total: total});
 }
 
 export async function POST(request: Request) {

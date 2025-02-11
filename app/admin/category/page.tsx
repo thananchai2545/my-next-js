@@ -11,36 +11,40 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
+import LimitTable from "../components/LimitTable";
 
 type Categoty = {
   id: string;
   category_name: string;
 };
+let page = 1;
+let limit = 5;
+const data = async () => {
+  const respones = await axios.get(
+    "/api/category?page=" + page + "&limit=" + limit
+  );
+  return respones.data;
+};
 
 const category = () => {
+  useEffect(() => {
+    getCategory();
+  }, []);
   const [open, setOpen] = useState<boolean>(false);
   const [categoryName, setCategoryName] = useState<string>("");
   const [category, setCategory] = useState<Categoty[]>([]);
   const [id, setId] = useState<string>("");
   const [edit, setEdit] = useState(false);
   const [deleteId, setDeleteId] = useState<boolean>(false);
-
-  useEffect(() => {
-    getCategory();
-  }, []);
+  const [total, setTotal] = useState(0);
+  const totalPages = Math.ceil(total / limit);
 
   const getCategory = async () => {
-    const respose = await axios.get("/api/category");
-    setCategory(respose.data.category);
+    data().then((res) => {
+      setCategory(res.category);
+      setTotal(res.total);
+    });
   };
 
   const handleAdd = async (e: React.FormEvent) => {
@@ -96,8 +100,15 @@ const category = () => {
       .catch((err) => console.log(err));
   };
 
-  const pagination = () => {
-    return category.length / 10;
+  const next = async () => {
+    page++;
+    getCategory();
+  };
+
+  const tableChenge = (e: React.ChangeEvent<HTMLFormElement>) => {
+    const { value } = e.target;
+    limit = Number(value);
+    getCategory();
   };
   return (
     <>
@@ -178,7 +189,12 @@ const category = () => {
           Toggle modal
         </button>
       </div>
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <div className="relative bg-white overflow-x-auto shadow-md sm:rounded-lg">
+        <div>
+          <form onChange={tableChenge}>
+            <LimitTable></LimitTable>
+          </form>
+        </div>
         <Table className="bg-white">
           <TableHeader className="bg-gray-50">
             <TableRow>
@@ -197,7 +213,7 @@ const category = () => {
             {category.map((item, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium text-center border-r">
-                  {index + 1}
+                  {page * limit - limit + index + 1}
                 </TableCell>
                 <TableCell className="border-r">{item.category_name}</TableCell>
                 <TableCell className="text-center border-r">
@@ -221,22 +237,23 @@ const category = () => {
           </TableBody>
         </Table>
       </div>
-      <div className="mt-2">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+      <div className="mt-2 flex justify-center items-center gap-3">
+        <Button
+          variant={"link"}
+          onClick={() => {
+            page--;
+            getCategory();
+          }}
+          disabled={page === 1}
+        >
+          Previous
+        </Button>
+        <span>
+          Page {page} of {totalPages}
+        </span>
+        <Button variant={"link"} onClick={next} disabled={page === totalPages}>
+          Next
+        </Button>
       </div>
       {/* Modal */}
       {open && (

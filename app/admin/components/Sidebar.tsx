@@ -1,40 +1,11 @@
 "use client";
 import { usePathname } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChartLine,
-  faUser,
-  faBorderAll,
-  faBox,
-} from "@fortawesome/free-solid-svg-icons";
+import { menu } from "@/utils/admin/sidebar";
 const Sidebar = () => {
   const pathname = usePathname();
   console.log(pathname);
-
-  const menu = [
-    {
-      label: "Dashboard",
-      icon: <FontAwesomeIcon icon={faChartLine} size="lg" />,
-      link: "/admin",
-    },
-    {
-      label: "ผู้ใช้งาน",
-      icon: <FontAwesomeIcon icon={faUser} size="lg" />,
-      link: "/admin/user",
-    },
-    {
-      label: "สินค้า",
-      icon: <FontAwesomeIcon icon={faBox} size="lg" />,
-      link: "/admin/products",
-    },
-    {
-      label: "หมวดหมู่สินค้า",
-      icon: <FontAwesomeIcon icon={faBorderAll} size="lg" />,
-      link: "/admin/category",
-    },
-  ];
 
   return (
     <>

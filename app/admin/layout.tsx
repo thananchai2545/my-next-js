@@ -11,7 +11,9 @@ const layout = ({ children }: { children: React.ReactNode }) => {
         <Navbar></Navbar>
       </div>
       <Sidebar></Sidebar>
-      <div className="ml-60 mt-14 p-4 bg-neutral-100 h-[100%]">{children}</div>
+      <div className="ml-60 mt-14 p-4 bg-neutral-100 min-h-screen">
+        {children}
+      </div>
     </>
   );
 };
